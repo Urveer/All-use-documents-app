@@ -6,14 +6,15 @@ import tsConfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
 	build: {
-		outDir: "dist",  // Ensure output goes to `dist/`
-		emptyOutDir: true,  // Clears old files before building
+		outDir: "dist",
+		emptyOutDir: true,
 		rollupOptions: {
 			input: {
 				main: "./electron/main.ts",
 				preload: "./electron/preload.ts",
-				renderer: "./index.html"  // Ensure renderer is included!
-			}
+				renderer: "./index.html"
+			},
+			external: ["electron"],  // Exclude Electron from final bundle
 		}
 	},
 	plugins: [
@@ -29,4 +30,5 @@ export default defineConfig({
 			renderer: {},
 		}),
 	],
-})
+});
+

@@ -31,9 +31,7 @@ export function DocT1() {
     const [students, setStudents] = useState<Student[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [excelFile, setExcelFile] = useState<File | null>(null);
-    const [wordTemplate, setWordTemplate] = useState<File | null>(null);
     const [processed, setProcessed] = useState<boolean>(false);
-
     const [schoolInfo, setSchoolInfo] = useState({
         school_naame: "",
         school_code: "",
@@ -95,111 +93,88 @@ export function DocT1() {
         reader.readAsArrayBuffer(excelFile);
     };
 
-    const handleWordUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setWordTemplate(event.target.files?.[0] || null);
-    };
-
-    const generateWordDocs = (students: Student[]) => {
-        if (!wordTemplate) {
-            setError("Please upload a Word template first.");
-            return;
+    async function fetchWordTemplate(url: string): Promise<Uint8Array | null> {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Failed to fetch template");
+            const arrayBuffer = await response.arrayBuffer();
+            return new Uint8Array(arrayBuffer);
+        } catch (error) {
+            console.error("Error fetching Word template:", error);
+            return null;
         }
-    
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            try {
-                const templateContent = new Uint8Array(e.target?.result as ArrayBuffer);
-                const templateZip = new PizZip(templateContent);
-                const outputZip = new PizZip();
-    
-                students.forEach((student) => {
-                    let docXml = templateZip.files["word/document.xml"].asText();
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(docXml, "application/xml");
-    
-                    // Function to replace placeholders dynamically
-                    const replacePlaceholderInRuns = (xml: Document, placeholders: Record<string, string>) => {
-                        Array.from(xml.getElementsByTagName("w:t")).forEach((textNode) => {
-                            Object.entries(placeholders).forEach(([key, value]) => {
-                                if (textNode.textContent?.includes(key)) {
-                                    textNode.textContent = textNode.textContent.replace(key, value);
-                                }
-                            });
-                        });
-                    };
-    
-                    // Define placeholders
-                    const placeholders = {
-                        name: student.name,
-                        father_naame: student.father_name,
-                        mother_naame: student.mother_name,
-                        dob: student.dob,
-                        aadhar_no: student.aadhar_no,
-                        sport: student.sport,
-                        passport_no: student.passport_no || "N/A",
-                        address: student.address,
-                        phone_no: student.phone_no,
-                        admission_no: student.admission_no,
-                        admission_year: student.admission_year,
-                        dojs: student.dojs,
-                        naame_of_insurer: student.name_of_insurer,
-                        policy_number: student.policy_number,
-                        policy_value: student.policy_value,
-                        policy_date_valid: student.policy_date_valid,
-                        current_grade: student.current_grade,
-                        prev_grade: (Number(student.current_grade) - 1).toString(),
-                        age_group: student.age_group,
-                        school_naame: schoolInfo.school_naame,
-                        school_code: schoolInfo.school_code,
-                        school_number: schoolInfo.school_number,
-                        region: schoolInfo.region
-                    };
-    
-                    // Replace placeholders
-                    replacePlaceholderInRuns(xmlDoc, placeholders);
-    
-                    // Handle dob_chars & aadhar_chars separately
-                    student.dob_chars.forEach((char, index) => {
-                        replacePlaceholderInRuns(xmlDoc, { [`d_${index}`]: char || "" });
-                    });
-                    student.aadhar_chars.forEach((char, index) => {
-                        replacePlaceholderInRuns(xmlDoc, { [`a_${index}`]: char || "" });
-                    });
-    
-                    // Serialize modified document XML
-                    const serializer = new XMLSerializer();
-                    docXml = serializer.serializeToString(xmlDoc);
-                    
-                    // Create new document zip for student
-                    const studentZip = new PizZip(templateContent);
-                    studentZip.file("word/document.xml", docXml);
-    
-                    // Generate final Word file for the student as ArrayBuffer
-                    const studentArrayBuffer = studentZip.generate({ type: "uint8array" });
-    
-                    // Add document to output ZIP as Uint8Array (NOT Blob)
-                    outputZip.file(`${student.name}_eligibility_form.docx`, studentArrayBuffer);
-                });
-    
-                // Generate the ZIP file as Uint8Array (correct format for PizZip)
-                const zipUint8Array = outputZip.generate({ type: "uint8array" });
-    
-                // Convert Uint8Array to Blob before saving
-                const zipBlob = new Blob([zipUint8Array], { type: "application/zip" });
-    
-                // Save ZIP file
-                saveAs(zipBlob, "Student_Documents.zip");
-                setError(null); // Clear errors on success
-    
-            } catch (err) {
-                setError("Error processing Word template. Ensure placeholders are correct.");
-            }
-        };
-    
-        reader.readAsArrayBuffer(wordTemplate);
-    };
-    
+    }
 
+    async function generateWordDocs(students: Student[], schoolInfo: any) {
+        const templateUrl = "/form-doc-t1.docx";
+        const templateContent = await fetchWordTemplate(templateUrl);
+        if (!templateContent) return;
+
+        try {
+            const templateZip = new PizZip(templateContent);
+            const outputZip = new PizZip();
+
+            students.forEach((student) => {
+                let docXml = templateZip.files["word/document.xml"].asText();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(docXml, "application/xml");
+
+                const replacePlaceholderInRuns = (xml: Document, placeholders: Record<string, string>) => {
+                    Array.from(xml.getElementsByTagName("w:t")).forEach((textNode) => {
+                        Object.entries(placeholders).forEach(([key, value]) => {
+                            if (textNode.textContent?.includes(key)) {
+                                textNode.textContent = textNode.textContent.replace(key, value);
+                            }
+                        });
+                    });
+                };
+
+                const placeholders = {
+                    name: student.name,
+                    father_name: student.father_name,
+                    mother_name: student.mother_name,
+                    dob: student.dob,
+                    aadhar_no: student.aadhar_no,
+                    sport: student.sport,
+                    passport_no: student.passport_no || "N/A",
+                    address: student.address,
+                    phone_no: student.phone_no,
+                    admission_no: student.admission_no,
+                    admission_year: student.admission_year,
+                    dojs: student.dojs,
+                    name_of_insurer: student.name_of_insurer,
+                    policy_number: student.policy_number,
+                    policy_value: student.policy_value,
+                    policy_date_valid: student.policy_date_valid,
+                    current_grade: student.current_grade,
+                    prev_grade: (Number(student.current_grade) - 1).toString(),
+                    age_group: student.age_group,
+                    school_name: schoolInfo.school_naame,
+                    school_code: schoolInfo.school_code,
+                    school_number: schoolInfo.school_number,
+                    region: schoolInfo.region
+                };
+
+                replacePlaceholderInRuns(xmlDoc, placeholders);
+                student.dob_chars.forEach((char, index) => replacePlaceholderInRuns(xmlDoc, { [`d_${index}`]: char || "" }));
+                student.aadhar_chars.forEach((char, index) => replacePlaceholderInRuns(xmlDoc, { [`a_${index}`]: char || "" }));
+
+                const serializer = new XMLSerializer();
+                docXml = serializer.serializeToString(xmlDoc);
+                const studentZip = new PizZip(templateContent);
+                studentZip.file("word/document.xml", docXml);
+
+                const studentArrayBuffer = studentZip.generate({ type: "uint8array" });
+                outputZip.file(`${student.name}_eligibility_form.docx`, studentArrayBuffer);
+            });
+
+            const zipUint8Array = outputZip.generate({ type: "uint8array" });
+            const zipBlob = new Blob([zipUint8Array], { type: "application/zip" });
+            saveAs(zipBlob, "Student_Documents.zip");
+        } catch (err) {
+            console.error("Error processing Word template:", err);
+        }
+    }
 
     return (
         <div className="container">
@@ -207,23 +182,52 @@ export function DocT1() {
 
             <label className="file-label">
                 Upload Excel File
-                <input type="file" accept=".xlsx, .xls" className="file-input" onChange={handleExcelUpload} />
+                <div className="file-input">
+                    <input type="file" accept=".xlsx, .xls" onChange={handleExcelUpload} />
+                </div>
             </label>
 
-            <label className="file-label">
+            {/* <label className="file-label">
                 Upload Word Template
-                <input type="file" accept=".docx" className="file-input" onChange={handleWordUpload} />
-            </label>
+                <div className="file-input">
+                    <input type="file" accept=".docx" onChange={handleWordUpload} />
+                </div>
+            </label> */}
 
-            <button className="small-button" onClick={handleProcessExcel}>Process Excel</button>
-
-            {/* ✅ Side-by-Side Inputs */}
             <div className="input-container">
-                <input className="input-field" type="text" name="school_naame" placeholder="School Name" onChange={handleInputChange} />
-                <input className="input-field" type="text" name="school_code" placeholder="School Code" onChange={handleInputChange} />
-                <input className="input-field" type="text" name="school_number" placeholder="School Number" onChange={handleInputChange} />
-                <input className="input-field" type="text" name="region" placeholder="Zone/Region" onChange={handleInputChange} />
+                <input
+                    className="input-field"
+                    type="text"
+                    name="school_naame"
+                    placeholder="School Name"
+                    onChange={handleInputChange}
+                />
+                <input
+                    className="input-field"
+                    type="text"
+                    name="school_code"
+                    placeholder="School Code"
+                    onChange={handleInputChange}
+                />
+                <input
+                    className="input-field"
+                    type="text"
+                    name="school_number"
+                    placeholder="School Number"
+                    onChange={handleInputChange}
+                />
+                <input
+                    className="input-field"
+                    type="text"
+                    name="region"
+                    placeholder="Zone/Region"
+                    onChange={handleInputChange}
+                />
             </div>
+
+            <button className="submit-button" onClick={handleProcessExcel}>
+                Submit and Process Files
+            </button>
 
             {error && <p className="error">{error}</p>}
 
@@ -241,7 +245,7 @@ export function DocT1() {
                     </li>
                 ))}
             </ul>
-            {processed && <button onClick={() => { generateWordDocs(students) }}>Download Word</button>}
+            {processed && <button onClick={() => { generateWordDocs(students, schoolInfo) }}>Download Word</button>}
         </div>
     );
 }

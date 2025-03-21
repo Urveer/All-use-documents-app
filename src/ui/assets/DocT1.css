@@ -3,179 +3,235 @@
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    font-family: "Poppins", sans-serif;
-    padding: 20px;
+    padding: 2rem;
     width: 100%;
-    max-width: 800px;
-    margin: auto;
+    max-width: 1000px;
+    margin: 2rem auto;  /* Changed from absolute positioning */
     text-align: center;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    animation: fadeIn 0.5s ease-in;
+    /* min-height: calc(100vh - 4rem);  Added to maintain full height feel */
 }
 
 h2 {
     color: #fff;
     font-size: 26px;
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-/* ✅ Input Fields & Dropdown Styling */
-.input-field, .dropdown {
-    font-size: 16px;
-    padding: 10px;
+/* File input styling */
+.file-label {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 600px;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.file-input {
+    position: relative;
+    width: 100%;
+}
+
+.file-input input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+}
+
+.file-input input[type="file"]::file-selector-button {
+    background: linear-gradient(135deg, #646cff 0%, #535bf2 100%);
+    border: none;
     border-radius: 8px;
-    border: 2px solid #646cff;
-    background-color: #1d1d1d;
+    color: white;
+    padding: 8px 16px;
+    margin-right: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-input input[type="file"]::file-selector-button:hover {
+    background: linear-gradient(135deg, #535bf2 0%, #4347d4 100%);
+}
+
+/* Input fields */
+.input-field {
+    font-size: 16px;
+    padding: 1em;
+    border-radius: 12px;
+    border: 1px solid rgba(100, 108, 255, 0.4);
+    background-color: rgba(100, 108, 255, 0.1);
     color: white;
     outline: none;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease;
     width: 300px;
     margin: 10px;
 }
 
-.dropdown {
-    cursor: pointer;
-    padding-right: 30px;
-    text-align: left;
-    appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="white"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 14px;
+.input-field:focus {
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
 }
 
-.dropdown:hover, .input-field:focus {
-    border-color: #ffffff;
-    background-color: #2a2a2a;
-}
-
-/* ✅ Button Styling */
-button, .search-button {
+/* Submit button */
+.submit-button {
     font-size: 16px;
-    padding: 12px 20px;
-    border-radius: 8px;
+    padding: 12px 24px;
+    border-radius: 12px;
     border: none;
-    background-color: #646cff;
+    background: linear-gradient(135deg, #646cff 0%, #535bf2 100%);
     color: white;
     cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
+    transition: all 0.3s ease;
     width: 300px;
-    font-weight: bold;
+    font-weight: 600;
+    margin-top: 20px;
     text-transform: uppercase;
 }
 
-button:hover, .search-button:hover {
-    background-color: #535bf2;
+.submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(100, 108, 255, 0.15);
 }
 
-/* ✅ Error Messages */
+/* Error message */
 .error {
     color: #ff4d4d;
     font-weight: 500;
     margin-top: 10px;
 }
 
-/* ✅ Students List */
-.students-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    padding: 0;
-    margin-top: 20px;
+/* Back button */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, #646cff 0%, #535bf2 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* ✅ Student Cards */
+.back-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(100, 108, 255, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        max-width: 90%;
+        padding: 1.5rem;
+    }
+
+    .input-field, .submit-button {
+        width: 100%;
+        margin: 8px 0;
+    }
+
+    .file-label {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* Student list container */
+.students-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+    margin-top: 30px;
+    width: 100%;
+    list-style: none;
+}
+
+/* Student card styling */
 .student-card {
-    border-radius: 10px;
-    border: 2px solid #646cff;
-    padding: 15px;
-    background-color: #1d1d1d;
+    border-radius: 16px;
+    background: rgba(100, 108, 255, 0.1);
+    border: 1px solid rgba(100, 108, 255, 0.2);
+    padding: 20px;
     cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-    width: 350px;
-    min-height: 120px;
-    max-height: 180px;
-    list-style-type: none;
+    transition: all 0.3s ease;
+    min-height: 140px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .student-card:hover {
-    background-color: #646cff;
+    transform: translateY(-4px);
+    background: rgba(100, 108, 255, 0.15);
+    border-color: rgba(100, 108, 255, 0.4);
+    box-shadow: 0 8px 25px rgba(100, 108, 255, 0.2);
 }
 
 .student-card .top {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(100, 108, 255, 0.2);
 }
 
 .student-card .top .name {
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 20px;
+    font-weight: 600;
     color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .student-card .bottom {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    color: white;
-    margin-top: 10px;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 15px;
 }
 
 .student-card .bottom p {
-    flex: 1;
-    text-align: center;
-    font-weight: 400;
-}
-
-/* ✅ Close Button */
-.cross {
-    cursor: pointer;
-    font-size: 1.5rem;
-    color: white;
-    background: none;
-    border: none;
-    transition: color 0.2s ease-in-out;
-}
-
-.cross:hover {
-    color: red;
-}
-
-/* ✅ Back Button */
-.back-button {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: #646cff;
-    color: white;
-    border: none;
-    padding: 8px 15px;
     font-size: 14px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
-.back-button:hover {
-    background-color: #4a4fd4;
+.student-card:hover .bottom p {
+    background: rgba(255, 255, 255, 0.1);
 }
 
-/* ✅ Responsive Design */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .container {
-        max-width: 90%;
-    }
-
-    .input-field, .dropdown, button {
-        width: 100%;
+    .students-list {
+        grid-template-columns: 1fr;
+        padding: 10px;
     }
 
     .student-card {
-        width: 90%;
+        padding: 15px;
+    }
+
+    .student-card .bottom {
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
 }

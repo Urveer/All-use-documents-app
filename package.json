@@ -1,7 +1,7 @@
 {
     "name": "all-use-documents-app",
-    "private": true,
-    "version": "0.0.1",
+    "private": false,
+    "version": "0.0.2",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -10,14 +10,12 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "@types/file-saver": "^2.0.7",
         "axios": "^1.8.2",
         "cors": "^2.8.5",
         "docx": "^9.2.0",
         "dotenv": "^16.4.7",
         "express": "^4.21.2",
         "file-saver": "^2.0.5",
-        "mongodb": "^6.14.2",
         "pizzip": "^3.1.8",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
@@ -31,6 +29,7 @@
         "@types/cors": "^2.8.17",
         "@types/electron": "^1.4.38",
         "@types/express": "^5.0.0",
+        "@types/file-saver": "^2.0.7",
         "@types/pizzip": "^3.0.5",
         "@types/react": "^18.2.64",
         "@types/react-dom": "^18.2.21",
@@ -57,9 +56,12 @@
         "files": [
             "dist/**/*",
             "dist-electron/**/*",
-            "electron/main.js",
-            "electron/preload.js",
-            "package.json"
+            "package.json",
+            "!node_modules/electron/dist/**/*.pdb",
+            "!node_modules/electron/dist/**/*.dmp",
+            "!node_modules/electron/dist/locales/*",
+            "!node_modules/electron/dist/swiftshader/*",
+            "!node_modules/electron/dist/resources/*.pak"
         ],
         "win": {
             "target": "nsis"

@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Fix __dirname in ES module
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const tempJsonPath = path.join(__dirname, "temp.json");
 
 // Define paths

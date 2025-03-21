@@ -1,0 +1,56 @@
+{
+	"$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+	"appId": "CISEDocuments",
+	"asar": {
+		"smartUnpack": true
+	},
+	"asarUnpack": [
+		"**/node_modules/**"
+	],
+	"productName": "CISE Documents",
+	"directories": {
+		"output": "release/${version}"
+	},
+	"compression": "maximum",
+	"files": [
+		"dist",
+		"dist-electron",
+		"!node_modules/*/{test,docs,examples}",
+		"!node_modules/.cache",
+		"!node_modules/**/*.map",
+		"!src",
+		"!**/*.md",
+		"!**/*.log"
+	],
+	"mac": {
+		"target": [
+			"dmg"
+		],
+		"artifactName": "${productName}-Mac-${version}-Installer.${ext}"
+	},
+	"win": {
+		"target": [
+			{
+				"target": "nsis",
+				"arch": [
+					"x64"
+				]
+			}
+		],
+		"artifactName": "${productName}-Windows-${version}-Setup.${ext}"
+	},
+	"nsis": {
+		"oneClick": false,
+		"perMachine": false,
+		"allowToChangeInstallationDirectory": true,
+		"deleteAppDataOnUninstall": false,
+		"artifactName": "${productName}-Windows-${version}-Setup.${ext}",
+		"compress": "maximum"
+	},
+	"linux": {
+		"target": [
+			"AppImage"
+		],
+		"artifactName": "${productName}-Linux-${version}.${ext}"
+	}
+}
