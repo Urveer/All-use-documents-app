@@ -10,9 +10,9 @@ export function Home() {
             </header>
 
             <ul className="buttons-list">
-                {[1,2,3,4,5,6, 7].map((doc, index) => (
+                {["CISE Forms"].map((doc, index) => (
                     <li key={index}>
-                        <Link to={`/doc-type-${doc}`}>
+                        <Link to={`/${doc.replace(" ", "-")}`}>
                             <button className="home-page-button">Document {doc}</button>
                         </Link>
                     </li>

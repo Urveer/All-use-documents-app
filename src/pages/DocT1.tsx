@@ -187,13 +187,6 @@ export function DocT1() {
                 </div>
             </label>
 
-            {/* <label className="file-label">
-                Upload Word Template
-                <div className="file-input">
-                    <input type="file" accept=".docx" onChange={handleWordUpload} />
-                </div>
-            </label> */}
-
             <div className="input-container">
                 <input
                     className="input-field"
@@ -238,9 +231,10 @@ export function DocT1() {
                             <p className="name">{student.name}</p>
                         </div>
                         <div className="bottom">
-                            <p className="name">Admission Number: {student.admission_no}</p>
+                            <p className="name">Admission No: {student.admission_no}</p>
                             <p className="name">Class: {student.current_grade}</p>
                             <p className="name">Sport: {student.sport}</p>
+                            <p className="name">DOB: {student.dob}</p>
                         </div>
                     </li>
                 ))}

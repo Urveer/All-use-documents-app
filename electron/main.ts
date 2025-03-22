@@ -1,26 +1,20 @@
-import { app, BrowserWindow, ipcMain, session } from "electron";
+import { app, BrowserWindow, session } from "electron";
 import { fileURLToPath } from "node:url";
-import fs from "fs";
 import path from "node:path";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-// Fix __dirname in ES module
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const tempJsonPath = path.join(__dirname, "temp.json");
 
-// Define paths
 const APP_ROOT = path.join(__dirname, "..");
 const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL || "";
 const RENDERER_DIST = path.join(APP_ROOT, "dist");
 
-// Set VITE_PUBLIC for assets
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(APP_ROOT, "public") : RENDERER_DIST;
 
 let win: BrowserWindow | null;
 
-// ✅ Function to create the main Electron window
 function createWindow() {
     win = new BrowserWindow({
         width: 1200,
@@ -56,40 +50,39 @@ app.on("window-all-closed", () => {
     }
 });
 
-// ✅ Recreate window when the app is activated (MacOS behavior)
 app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
     }
 });
 
-// ✅ Delete temp.json file on app exit
-app.on("before-quit", () => {
-    if (fs.existsSync(tempJsonPath)) {
-        fs.unlinkSync(tempJsonPath);
-        console.log("🗑️ temp.json deleted on app exit.");
-    }
-});
+// // ✅ Delete temp.json file on app exit
+// app.on("before-quit", () => {
+//     if (fs.existsSync(tempJsonPath)) {
+//         fs.unlinkSync(tempJsonPath);
+//         console.log("🗑️ temp.json deleted on app exit.");
+//     }
+// });
 
-// ✅ IPC Handlers
-ipcMain.on("delete-temp-json", () => {
-    if (fs.existsSync(tempJsonPath)) {
-        fs.unlinkSync(tempJsonPath);
-        console.log("🗑️ temp.json deleted manually.");
-    }
-});
+// // ✅ IPC Handlers
+// ipcMain.on("delete-temp-json", () => {
+//     if (fs.existsSync(tempJsonPath)) {
+//         fs.unlinkSync(tempJsonPath);
+//         console.log("🗑️ temp.json deleted manually.");
+//     }
+// });
 
-ipcMain.on("save-json", (_event, data) => {
-    fs.writeFile(tempJsonPath, JSON.stringify(data, null, 2), (err) => {
-        if (err) {
-            console.error("❌ Failed to save JSON:", err);
-        } else {
-            console.log("✅ JSON file saved:", tempJsonPath);
-        }
-    });
-});
+// ipcMain.on("save-json", (_event, data) => {
+//     fs.writeFile(tempJsonPath, JSON.stringify(data, null, 2), (err) => {
+//         if (err) {
+//             console.error("❌ Failed to save JSON:", err);
+//         } else {
+//             console.log("✅ JSON file saved:", tempJsonPath);
+//         }
+//     });
+// });
 
-// ✅ Setup Content Security Policy
+// // ✅ Setup Content Security Policy
 app.whenReady().then(() => {
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
         const isDev = !!VITE_DEV_SERVER_URL;

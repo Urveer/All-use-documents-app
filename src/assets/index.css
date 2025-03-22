@@ -18,7 +18,7 @@ body {
 	place-items: center;
 	align-items: center;
 	min-height: 100vh;
-	background: linear-gradient(145deg, #1a1a1a 0%, #242424 100%);
+	background: linear-gradient(145deg, #111111 0%, #202020 100%);
 }
 
 a {
@@ -50,4 +50,12 @@ button:focus-visible {
 	font-weight: 500;
 }
 
-/* Removing light theme for consistency */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.2em;
+    }
+    
+    body {
+        padding: 1rem;
+    }
+}

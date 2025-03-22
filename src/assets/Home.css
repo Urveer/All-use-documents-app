@@ -58,7 +58,7 @@ button.home-page-button:hover::after {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, .085);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     backdrop-filter: blur(10px);
     animation: fadeIn 0.5s ease-in;
@@ -93,4 +93,28 @@ button.home-page-button:hover {
 .home-header p {
     font-size: 1.2em;
     color: rgba(255, 255, 255, 0.7);
+}
+
+
+@media (max-width: 768px) {
+    .home-container {
+        margin: 1rem auto;
+        padding: 1rem;
+        min-height: auto;
+    }
+
+    .home-header h1 {
+        font-size: 2.5em;
+    }
+
+    .buttons-list {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    button.home-page-button {
+        padding: 1.5em 2em;
+        font-size: 16px;
+    }
 }

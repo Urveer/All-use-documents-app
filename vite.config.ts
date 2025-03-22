@@ -14,7 +14,7 @@ export default defineConfig({
 				preload: "./electron/preload.ts",
 				renderer: "./index.html"
 			},
-			external: ["electron"],  // Exclude Electron from final bundle
+			external: ["electron"], 
 		}
 	},
 	plugins: [
