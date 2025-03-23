@@ -85,7 +85,7 @@ export function DocT1() {
                 }));
 
                 setStudents(formattedData);
-                setError(null); // Clear errors on success
+                setError(null);
             } catch (err) {
                 setError("Error processing Excel file. Please check the format.");
             }
